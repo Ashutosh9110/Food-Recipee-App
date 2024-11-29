@@ -1,0 +1,1 @@
+export const baseUrl = "https://food-recipee-app.onrender.com"

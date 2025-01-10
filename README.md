@@ -6,7 +6,7 @@ It showcases a variety of recipes along with their descriptions, ingredients, an
 
 <h1>🌐 Live Demo</h1>
 
-Click: [Here](https://food-recipee-2br4qxnsn-ashutoshs-projects-b91f7c39.vercel.app)
+Click: [Here](https://food-recipee-app-beta.vercel.app/)
 
 <h2>📚 Table of Contents</h2>
 

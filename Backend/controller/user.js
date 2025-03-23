@@ -8,7 +8,7 @@ const userSignUp = async (req, res) => {
         return res.status(400).json({ message: "Email and password is required" })
     }
     let user = await User.findOne({ email })
-    if (user) {
+    if (user) {x``
         return res.status(400).json({ error: "Email already exist" })
     }
     const hashPwd = await bcrypt.hash(password, 10)
@@ -31,7 +31,7 @@ const userLogin = async (req, res) => {
         return res.status(200).json({ token, user })
     }
     else {
-        return res.status(400).json({ error: "Invaild credientials" })
+        return res.status(400).json({ error: "Invaild credentials" })
     }
 }
 

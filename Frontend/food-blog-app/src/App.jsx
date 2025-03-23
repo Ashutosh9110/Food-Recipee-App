@@ -8,6 +8,7 @@ import  AddFoodRecipe  from './pages/AddFoodRecipe'
 import EditRecipe from './pages/EditRecipe'
 import RecipeDetails from './pages/RecipeDetails'
 import { baseUrl } from '../url'
+import CustomCursor from './components/CustomCursor'
 
 
 const getAllRecipes=async()=>{
@@ -56,6 +57,7 @@ const router=createBrowserRouter([
 export default function App() {
   return (
    <>
+   <CustomCursor />
    <RouterProvider router={router}></RouterProvider>
    </>
   )

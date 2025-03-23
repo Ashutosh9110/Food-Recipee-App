@@ -1,11 +1,13 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { baseUrl } from '../../url'
 
 export default function AddFoodRecipe() {
+    
     const [recipeData, setRecipeData] = useState({})
     const navigate = useNavigate()
+
     const onHandleChange = (e) => {
         let val = (e.target.name === "ingredients") ? e.target.value.split(",") : (e.target.name === "file") ? e.target.files[0] : e.target.value
         setRecipeData(pre => ({ ...pre, [e.target.name]: val }))

@@ -1,20 +1,27 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 
 export default function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
       setPosition({ x: e.clientX, y: e.clientY });
+      
+      // Only show cursor after first mouse movement
+      if (!isVisible) {
+        setIsVisible(true);
+      }
     };
 
     const handleMouseOver = (e) => {
       if (e.target.tagName === 'A' || 
           e.target.tagName === 'BUTTON' || 
           e.target.classList.contains('card') ||
-          e.target.closest('.card')) {
+          e.target.closest('.card') ||
+          e.target.closest('a') ||
+          e.target.closest('button')) {
         setIsHovering(true);
       } else {
         setIsHovering(false);
@@ -28,38 +35,46 @@ export default function CustomCursor() {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseover', handleMouseOver);
     };
-  }, []);
+  }, [isVisible]);
+
+  // Don't render the cursor if it's not visible yet
+  if (!isVisible) return null;
+
+  const cursorStyle = {
+    left: `${position.x}px`,
+    top: `${position.y}px`,
+    transform: 'translate(-50%, -50%)',
+    position: 'fixed',
+    width: '8px',
+    height: '8px',
+    backgroundColor: 'white',
+    borderRadius: '50%',
+    pointerEvents: 'none',
+    zIndex: 9999,
+    mixBlendMode: 'difference',
+    transition: 'opacity 0.15s ease-in-out',
+    filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.5))'
+  };
+
+  const ringStyle = {
+    left: `${position.x}px`,
+    top: `${position.y}px`,
+    transform: `translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})`,
+    position: 'fixed',
+    width: '40px',
+    height: '40px',
+    border: '1px solid rgba(255, 255, 255, 0.5)',
+    borderRadius: '50%',
+    pointerEvents: 'none',
+    zIndex: 9998,
+    transition: 'all 0.15s ease-in-out',
+    opacity: isHovering ? 0.8 : 0.5
+  };
 
   return (
-    <>
-      <motion.div
-        className="fixed top-0 left-0 w-6 h-6 rounded-full bg-white mix-blend-difference pointer-events-none z-50"
-        animate={{
-          x: position.x - 12,
-          y: position.y - 12,
-          scale: isHovering ? 1.5 : 1
-        }}
-        transition={{
-          type: 'spring',
-          damping: 20,
-          mass: 0.3,
-          stiffness: 300
-        }}
-      />
-      <motion.div
-        className="fixed top-0 left-0 w-24 h-24 rounded-full border border-white mix-blend-difference pointer-events-none z-40"
-        animate={{
-          x: position.x - 48,
-          y: position.y - 48,
-          opacity: isHovering ? 1 : 0.3
-        }}
-        transition={{
-          type: 'spring',
-          damping: 40,
-          mass: 0.6,
-          stiffness: 200
-        }}
-      />
-    </>
+    <div className="cursor-container" style={{ pointerEvents: 'none' }}>
+      <div className="cursor-dot" style={cursorStyle} />
+      <div className="cursor-ring" style={ringStyle} />
+    </div>
   );
 } 

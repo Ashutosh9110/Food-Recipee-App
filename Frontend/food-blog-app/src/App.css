@@ -9,21 +9,22 @@
 
 body {
   overflow-x: hidden;
+  background-color: #050505;
 }
 
 :root {
-  --card-bg: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.8);
   --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   --text-color: #333;
-  --bg-color: #f5f5f5;
+  --bg-color: rgba(245, 245, 245, 0.8);
   --accent-color: #38b2ac;
 }
 
 .dark {
-  --card-bg: #1e293b;
+  --card-bg: rgba(30, 41, 59, 0.8);
   --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   --text-color: #f1f5f9;
-  --bg-color: #0f172a;
+  --bg-color: rgba(15, 23, 42, 0.8);
   --accent-color: #4fd1c5;
 }
 
@@ -36,13 +37,22 @@ header {
   position: fixed;
   top:0;
   z-index: 10;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
   transition: background-color 0.3s ease;
 }
 
 .dark header {
-  background-color: #1e293b;
+  background-color: rgba(30, 41, 59, 0.8);
   box-shadow: 1px 0 5px rgba(0, 0, 0, 0.4);
+}
+
+header h2 {
+  margin-left: 1rem;
+  background: linear-gradient(to right, #ff3a82, #5233ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
 }
 
 header ul{
@@ -59,25 +69,21 @@ header ul li{
 }
 
 li a{
-  color: black;
+  color: var(--text-color);
   transition: all 0.3s;
-  padding:2px 10px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 30px;
 }
 
 li a:hover{
-  color:black;
+  color: #fff;
+  background: linear-gradient(90deg, #ff3a82, #5233ff);
 }
 
 li .login{
-  color: black;
+  color: var(--text-color);
   font-size: 16px;
   font-weight: 500;
-}
-
-header h2{
-  margin-left: 1rem;
-  color: black;
 }
 
 section{
@@ -87,10 +93,14 @@ section{
 }
 
 .home{
+  width: 80vw;
+  height: 85vh;
   display: flex;
-  margin-top: 6rem;
-  gap:10rem;
-  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 100px auto 0;
+  padding: 2rem;
 }
 
 .home .left h1{

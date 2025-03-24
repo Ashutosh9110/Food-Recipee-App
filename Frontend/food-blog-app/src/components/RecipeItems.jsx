@@ -4,16 +4,16 @@ import { BsStopwatchFill } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { motion } from "framer-motion";
 import axios from 'axios';
 import { baseUrl } from '../../url';
-import { motion } from 'framer-motion';
 
 export default function RecipeItems() {
     const recipes = useLoaderData()
     const [allRecipes, setAllRecipes] = useState()
     let path = window.location.pathname === "/myRecipe" ? true : false
     let favItems = JSON.parse(localStorage.getItem("fav")) ?? []
-    const navigate=useNavigate()
+    const navigate = useNavigate()
 
     useEffect(() => {
         setAllRecipes(recipes)
@@ -33,8 +33,7 @@ export default function RecipeItems() {
         localStorage.setItem("fav", JSON.stringify(favItems))
     }
 
-    // Animation variants
-    const containerVariants = {
+    const container = {
         hidden: { opacity: 0 },
         show: {
             opacity: 1,
@@ -43,92 +42,105 @@ export default function RecipeItems() {
             }
         }
     };
-
-    const cardVariants = {
-        hidden: { opacity: 0, y: 50 },
-        show: { 
-            opacity: 1, 
-            y: 0,
-            transition: {
-                type: "spring",
-                damping: 15
-            }
-        },
-        hover: {
-            y: -10,
-            boxShadow: "0px 10px 20px rgba(0,0,0,0.2)",
-            transition: {
-                type: "spring",
-                stiffness: 300
-            }
-        }
+      
+    const item = {
+        hidden: { y: 20, opacity: 0 },
+        show: { y: 0, opacity: 1 }
     };
 
     return (
-        <>
-            <motion.div 
-                className='card-container'
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-            >
-                {
-                    allRecipes?.map((item, index) => {
-                        return (
-                            <motion.div 
-                                key={index} 
-                                className='card dark:bg-gray-800 dark:text-white'
-                                variants={cardVariants}
-                                whileHover="hover"
-                                onDoubleClick={()=>navigate(`/recipe/${item._id}`)}
-                            >
-                                <motion.img 
-                                    src={`${baseUrl}/images/${item.coverImage}`} 
-                                    width="120px" 
-                                    height="100px"
-                                    whileHover={{ scale: 1.05 }}
-                                    transition={{ duration: 0.3 }}
-                                />
-                                <div className='card-body'>
-                                    <motion.div 
-                                        className='title'
-                                        whileHover={{ scale: 1.02 }}
-                                    >
-                                        {item.title}
-                                    </motion.div>
-                                    <div className='icons'>
-                                        <div className='timer'><BsStopwatchFill />{item.time}</div>
-                                        {(!path) ? (
-                                            <motion.div
-                                                whileTap={{ scale: 1.3 }}
-                                            >
-                                                <FaHeart 
-                                                    onClick={() => favRecipe(item)}
-                                                    style={{ color: (favItems.some(res => res._id === item._id)) ? "red" : "" }} 
-                                                />
-                                            </motion.div>
-                                        ) : (
-                                            <div className='action'>
-                                                <motion.div whileHover={{ scale: 1.2 }}>
-                                                    <Link to={`/editRecipe/${item._id}`} className="editIcon">
-                                                        <FaEdit />
-                                                    </Link>
-                                                </motion.div>
-                                                <motion.div whileHover={{ scale: 1.2 }}>
-                                                    <MdDelete 
-                                                        onClick={() => onDelete(item._id)} 
-                                                        className='deleteIcon' 
-                                                    />
-                                                </motion.div>
-                                            </div>
-                                        )}
-                                    </div>
+        <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            variants={container}
+            initial="hidden"
+            animate="show"
+        >
+            {allRecipes?.length > 0 ? (
+                allRecipes.map((item, index) => (
+                    <motion.div 
+                        key={index} 
+                        className="card group cursor-pointer"
+                        onClick={() => navigate(`/recipe/${item._id}`)}
+                        variants={item}
+                        whileHover={{ 
+                            y: -10,
+                            transition: { duration: 0.3 }
+                        }}
+                    >
+                        <div className="relative h-52 overflow-hidden rounded-t-lg">
+                            <img 
+                                src={`${baseUrl}/images/${item.coverImage}`} 
+                                alt={item.title}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </div>
+                        <div className="p-6">
+                            <h3 className="text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600 group-hover:from-purple-600 group-hover:to-pink-500 transition-all duration-300">
+                                {item.title}
+                            </h3>
+                            <div className="flex justify-between items-center mt-4">
+                                <div className="flex items-center space-x-2 text-gray-400">
+                                    <BsStopwatchFill className="text-pink-500" />
+                                    <span>{item.time}</span>
                                 </div>
-                            </motion.div>
-                        )
-                    })
-                }
-            </motion.div>
-        </>
+                                
+                                {(!path) ? (
+                                    <motion.button 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            favRecipe(item);
+                                        }} 
+                                        className="text-2xl focus:outline-none"
+                                        whileTap={{ scale: 0.9 }}
+                                        whileHover={{ scale: 1.1 }}
+                                    >
+                                        <FaHeart className={favItems.some(res => res._id === item._id) ? "text-red-500" : "text-gray-400 hover:text-red-400"} />
+                                    </motion.button>
+                                ) : (
+                                    <div className="flex space-x-4">
+                                        <motion.div
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.9 }}
+                                        >
+                                            <Link 
+                                                to={`/editRecipe/${item._id}`}
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="text-blue-500 hover:text-blue-400 transition-colors"
+                                            >
+                                                <FaEdit size={20} />
+                                            </Link>
+                                        </motion.div>
+                                        <motion.button 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onDelete(item._id);
+                                            }} 
+                                            className="text-red-500 hover:text-red-400 transition-colors"
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.9 }}
+                                        >
+                                            <MdDelete size={20} />
+                                        </motion.button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </motion.div>
+                ))
+            ) : (
+                <motion.div 
+                    className="col-span-full text-center p-8 card"
+                    variants={item}
+                >
+                    <h3 className="text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">
+                        No recipes found
+                    </h3>
+                    <p className="text-gray-400">
+                        Try adding some delicious recipes!
+                    </p>
+                </motion.div>
+            )}
+        </motion.div>
     )
 }

@@ -52,8 +52,7 @@ export default function CustomCursor() {
     pointerEvents: 'none',
     zIndex: 9999,
     mixBlendMode: 'difference',
-    transition: 'opacity 0.15s ease-in-out',
-    filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.5))'
+    opacity: 0.7
   };
 
   const ringStyle = {
@@ -61,14 +60,14 @@ export default function CustomCursor() {
     top: `${position.y}px`,
     transform: `translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})`,
     position: 'fixed',
-    width: '40px',
-    height: '40px',
-    border: '1px solid rgba(255, 255, 255, 0.5)',
+    width: '30px',
+    height: '30px',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '50%',
     pointerEvents: 'none',
     zIndex: 9998,
     transition: 'all 0.15s ease-in-out',
-    opacity: isHovering ? 0.8 : 0.5
+    opacity: isHovering ? 0.6 : 0.3
   };
 
   return (

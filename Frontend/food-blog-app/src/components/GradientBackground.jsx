@@ -11,7 +11,7 @@ const GradientBackground = () => {
       const container = particlesContainerRef.current;
       container.innerHTML = '';
       
-      const particleCount = 30;
+      const particleCount = 15; // Reduced particle count for better performance
       
       for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
@@ -22,7 +22,7 @@ const GradientBackground = () => {
         const y = Math.random() * 100;
         
         // Random size (smaller particles)
-        const size = Math.random() * 2 + 1;
+        const size = Math.random() * 1.5 + 0.5;
         
         // Style the particle
         particle.style.left = `${x}%`;
@@ -31,11 +31,11 @@ const GradientBackground = () => {
         particle.style.height = `${size}px`;
         
         // Random animation delay and duration
-        const animDuration = Math.random() * 20 + 10;
+        const animDuration = Math.random() * 15 + 10;
         const animDelay = Math.random() * 5;
         
         particle.style.animation = `float-particle ${animDuration}s ease-in-out ${animDelay}s infinite alternate`;
-        particle.style.opacity = Math.random() * 0.5 + 0.1;
+        particle.style.opacity = Math.random() * 0.3 + 0.05;
         
         container.appendChild(particle);
       }

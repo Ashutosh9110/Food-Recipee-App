@@ -9,7 +9,7 @@ import EditRecipe from './pages/EditRecipe'
 import RecipeDetails from './pages/RecipeDetails'
 import { baseUrl } from '../url'
 import GradientBackground from './components/GradientBackground'
-import CustomCursor from './components/CustomCursor'
+import FluidCursor from './components/FluidCursor'
 
 const getAllRecipes = async () => {
   let allRecipes = []
@@ -59,7 +59,7 @@ export default function App() {
   return (
     <>
       <GradientBackground />
-      <CustomCursor />
+      <FluidCursor />
       <RouterProvider router={router} />
     </>
   )

@@ -23,7 +23,7 @@ export default function InputForm({ setIsOpen }) {
 
 
   return (
-    <div className='p-4 flex flex-col items-center justify-center h-84 w-96'>
+    <div className='p-4'>
       <h2 className='text-2xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600'>
         {isSignUp ? 'Register' : 'Login'}
       </h2>

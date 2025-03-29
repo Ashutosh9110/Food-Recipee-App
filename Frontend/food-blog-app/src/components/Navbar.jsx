@@ -33,7 +33,7 @@ export default function Navbar() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="bg-black/80 backdrop-blur-md border-b border-gray-800">
+        <div className="bg-black/80 backdrop-blur-md border-b border-gray-800 w-screen">
           <div className="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
             <motion.div 
               className="text-2xl font-bold"
@@ -78,7 +78,7 @@ export default function Navbar() {
                         : "text-white px-5 py-2 rounded-full hover:bg-gray-800 transition-colors font-medium"
                     }
                   >
-                    My Recipes
+                    MyRecipes
                   </NavLink>
                 </motion.li>
                 <motion.li 

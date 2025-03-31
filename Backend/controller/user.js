@@ -8,7 +8,7 @@ const userSignUp = async (req, res) => {
         return res.status(400).json({ message: "Email and password is required" })
     }
     let user = await User.findOne({ email })
-    if (user) {x``
+    if (user) {
         return res.status(400).json({ error: "Email already exist" })
     }
     const hashPwd = await bcrypt.hash(password, 10)

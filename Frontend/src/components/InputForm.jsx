@@ -1,24 +1,62 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
-import { baseUrl } from '../../url'
+import PropTypes from 'prop-types'
 
 export default function InputForm({ setIsOpen }) {
    const [email,setEmail]=useState("")
    const [password,setPassword]=useState("")
    const [isSignUp,setIsSignUp]=useState(false) 
    const [error,setError]=useState("")
-
+   const [loading, setLoading] = useState(false)
 
   const handleOnSubmit=async(e)=>{
     e.preventDefault()
+    setLoading(true)
+    setError("")
     let endpoint=(isSignUp) ? "signUp" : "login"
-    await axios.post(`http://localhost:5000/${endpoint}`,{email,password})
-    .then((res)=>{
-        localStorage.setItem("token",res.data.token)
-        localStorage.setItem("user",JSON.stringify(res.data.user))
-        setIsOpen()
-    })
-    .catch(data=>setError(data.response?.data?.error))
+    
+    // Get the backend URL from environment variables
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    console.log("Using backend URL:", backendUrl);
+    
+    try {
+      // Configure axios with headers
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        withCredentials: false // Set to true if your API uses cookies for auth
+      };
+      
+      // Direct endpoint without /api prefix since Vercel routes everything to /api
+      console.log("Sending request to:", `${backendUrl}/${endpoint}`);
+      const response = await axios.post(
+        `${backendUrl}/${endpoint}`, 
+        {email, password}, 
+        config
+      );
+      
+      console.log("Auth response:", response.data);
+      localStorage.setItem("token", response.data.token)
+      localStorage.setItem("user", JSON.stringify(response.data.user))
+      setIsOpen()
+    } catch (err) {
+      console.error("Auth error:", err);
+      if (err.response) {
+        console.error("Error data:", err.response.data);
+        console.error("Error status:", err.response.status);
+        setError(err.response.data.error || err.response.data.message || "Authentication failed");
+      } else if (err.request) {
+        console.error("No response received:", err.request);
+        setError("No response from server. Please check your internet connection.");
+      } else {
+        console.error("Error message:", err.message);
+        setError("Failed to connect to server");
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
 
@@ -33,6 +71,7 @@ export default function InputForm({ setIsOpen }) {
                 <input 
                   type="email" 
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  value={email}
                   onChange={(e)=>setEmail(e.target.value)} required></input>
             </div>
             <div className='mb-4'>
@@ -40,11 +79,13 @@ export default function InputForm({ setIsOpen }) {
                 <input 
                   type="password" 
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  value={password}
                   onChange={(e)=>setPassword(e.target.value)} required></input>
             </div>
             <button 
               className='btn w-full mt-7'
-              type='submit'>{(isSignUp) ? "Sign Up": "Login"}</button><br></br>
+              disabled={loading}
+              type='submit'>{loading ? "Processing..." : (isSignUp ? "Sign Up" : "Login")}</button><br></br>
           { (error!="") && <h6 className='text-red-500 mb-4 text-sm text-center mt-6'>{error}</h6>}<br></br>
             <p 
               className='text-center text-gray-400 cursor-pointer hover:text-gray-300'
@@ -52,4 +93,9 @@ export default function InputForm({ setIsOpen }) {
         </form>
     </div>
   )
+}
+
+// PropTypes validation
+InputForm.propTypes = {
+  setIsOpen: PropTypes.func.isRequired
 }

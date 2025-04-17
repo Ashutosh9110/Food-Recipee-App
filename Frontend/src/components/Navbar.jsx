@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Modal from './Modal'
 import InputForm from './InputForm'
 import { NavLink } from 'react-router-dom'
@@ -6,6 +6,9 @@ import { motion } from 'framer-motion'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isScrolling, setIsScrolling] = useState(false)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [visible, setVisible] = useState(true)
   let token = localStorage.getItem("token")
   const [isLogin, setIsLogin] = useState(token ? false : true)
   let user = JSON.parse(localStorage.getItem("user"))
@@ -13,6 +16,32 @@ export default function Navbar() {
   useEffect(() => {
     setIsLogin(token ? false : true)
   }, [token])
+
+  // Handle scroll behavior
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      
+      // Determine if user is actively scrolling
+      if (currentScrollY > 20) {
+        setIsScrolling(true)
+      } else {
+        setIsScrolling(false)
+      }
+      
+      // Show navbar when scrolling up, hide when scrolling down
+      if (currentScrollY < lastScrollY || currentScrollY < 50) {
+        setVisible(true)
+      } else if (currentScrollY > 100 && currentScrollY > lastScrollY) {
+        setVisible(false)
+      }
+      
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
 
   const checkLogin = () => {
     if (token) {
@@ -28,12 +57,12 @@ export default function Navbar() {
   return (
     <>
       <motion.header 
-        className="fixed top-0 left-0 right-0 z-50"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${!visible ? '-translate-y-full' : 'translate-y-0'}`}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="bg-black/80 backdrop-blur-md border-b border-gray-800 w-screen">
+        <div className={`${isScrolling ? 'bg-black/80 backdrop-blur-md border-b border-gray-800' : 'bg-transparent border-transparent'} transition-all duration-300 w-screen`}>
           <div className="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
             <motion.div 
               className="text-2xl font-bold"

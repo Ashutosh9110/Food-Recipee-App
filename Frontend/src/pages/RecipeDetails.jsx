@@ -1,12 +1,55 @@
-import React from 'react'
-import profileImg from '../assets/profile.png'
-import { useLoaderData } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import axios from 'axios'
 import { baseUrl } from '../../url'
 import { motion } from 'framer-motion'
 import { BsStopwatchFill, BsPersonCircle } from 'react-icons/bs'
 
 export default function RecipeDetails() {
-    const recipe = useLoaderData()
+    const [recipe, setRecipe] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const { id } = useParams()
+    
+    useEffect(() => {
+        const fetchRecipeDetails = async () => {
+            setLoading(true)
+            try {
+                const recipeResponse = await axios.get(`${baseUrl}/recipe/${id}`)
+                const recipeData = recipeResponse.data
+                
+                // Get user information
+                const userResponse = await axios.get(`${baseUrl}/user/${recipeData.createdBy}`)
+                const userData = userResponse.data
+                
+                setRecipe({
+                    ...recipeData,
+                    email: userData.email
+                })
+            } catch (error) {
+                console.error("Error fetching recipe details:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        
+        fetchRecipeDetails()
+    }, [id])
+    
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+            </div>
+        )
+    }
+    
+    if (!recipe) {
+        return (
+            <div className="max-w-4xl mx-auto px-4 py-12 text-center">
+                <h2 className="text-2xl font-bold text-red-500">Recipe not found</h2>
+            </div>
+        )
+    }
     
     return (
         <>

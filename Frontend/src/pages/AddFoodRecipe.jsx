@@ -60,7 +60,7 @@ export default function AddFoodRecipe() {
 
     return (
         <>
-            <div className="w-full max-w-3xl mx-auto px-4 py-16">
+            <div className="w-full max-w-4xl mx-auto px-4 py-24">
                 <motion.h1 
                     className="text-4xl font-bold mb-10 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
                     initial={{ opacity: 0, y: -20 }}
@@ -71,7 +71,7 @@ export default function AddFoodRecipe() {
                 </motion.h1>
                 
                 <motion.form 
-                    className="card p-8"
+                    className="card p-8 w-full max-w-3xl mx-auto"
                     onSubmit={onHandleSubmit}
                     variants={formVariants}
                     initial="hidden"
@@ -109,7 +109,7 @@ export default function AddFoodRecipe() {
                             rows="4" 
                             onChange={onHandleChange}
                             required
-                            placeholder="Enter ingredients separated by commas"
+                            placeholder="Add ingredients separated by commas"
                         ></textarea>
                         <p className="text-gray-400 text-sm mt-1">Separate ingredients with commas</p>
                     </motion.div>

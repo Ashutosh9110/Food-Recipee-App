@@ -55,40 +55,35 @@ export default function Home() {
         );
 
         // Scroll animations for recipe cards
-        const animateRecipes = () => {
-            ScrollTrigger.batch(".card", {
-                onEnter: (elements) => {
-                    gsap.to(elements, {
-                        opacity: 1,
-                        y: 0,
-                        stagger: 0.15,
-                        ease: "power2.out"
-                    });
-                },
-                onLeave: (elements) => {
-                    gsap.set(elements, {
-                        opacity: 0.5,
-                        y: 30
-                    });
-                },
-                onEnterBack: (elements) => {
-                    gsap.to(elements, {
-                        opacity: 1,
-                        y: 0,
-                        stagger: 0.15
-                    });
-                },
-                onLeaveBack: (elements) => {
-                    gsap.set(elements, {
-                        opacity: 0.5,
-                        y: -30
-                    });
-                }
-            });
-        };
-
-        // Call on component mount
-        animateRecipes();
+        ScrollTrigger.batch(".card", {
+            onEnter: (elements) => {
+                gsap.to(elements, {
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.15,
+                    ease: "power2.out"
+                });
+            },
+            onLeave: (elements) => {
+                gsap.set(elements, {
+                    opacity: 0.5,
+                    y: 30
+                });
+            },
+            onEnterBack: (elements) => {
+                gsap.to(elements, {
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.15
+                });
+            },
+            onLeaveBack: (elements) => {
+                gsap.set(elements, {
+                    opacity: 0.5,
+                    y: -30
+                });
+            }
+        });
 
         // Clean up
         return () => {

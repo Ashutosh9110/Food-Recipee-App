@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useLoaderData, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { BsStopwatchFill } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
@@ -8,16 +8,48 @@ import { motion } from "framer-motion";
 import axios from 'axios';
 import { baseUrl } from '../../url';
 
-export default function RecipeItems() {
-    const recipes = useLoaderData()
-    const [allRecipes, setAllRecipes] = useState()
+export default function RecipeItems({ initialRecipes = [] }) {
+    const [allRecipes, setAllRecipes] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     let path = window.location.pathname === "/myRecipe" ? true : false
     let favItems = JSON.parse(localStorage.getItem("fav")) ?? []
     const navigate = useNavigate()
 
     useEffect(() => {
-        setAllRecipes(recipes)
-    }, [recipes])
+        const fetchRecipes = async () => {
+            setIsLoading(true)
+            try {
+                // If we're on the myRecipes page, filter recipes
+                if (path) {
+                    const response = await axios.get(`${baseUrl}/recipe`)
+                    const recipes = response.data
+                    const user = JSON.parse(localStorage.getItem("user"))
+                    if (user && user._id) {
+                        const filteredRecipes = recipes.filter(recipe => recipe.createdBy === user._id)
+                        setAllRecipes(filteredRecipes)
+                    } else {
+                        setAllRecipes([])
+                    }
+                } 
+                // If we're on the favorites page
+                else if (window.location.pathname === "/favRecipe") {
+                    setAllRecipes(favItems)
+                }
+                // Default home page with all recipes
+                else {
+                    const response = await axios.get(`${baseUrl}/recipe`)
+                    setAllRecipes(response.data)
+                }
+            } catch (error) {
+                console.error("Error fetching recipes:", error)
+                setAllRecipes([])
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchRecipes()
+    }, [path])
 
     const onDelete = async (id) => {
         await axios.delete(`${baseUrl}/recipe/${id}`)
@@ -47,6 +79,14 @@ export default function RecipeItems() {
         hidden: { y: 20, opacity: 0 },
         show: { y: 0, opacity: 1 }
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+            </div>
+        )
+    }
 
     return (
         <motion.div 

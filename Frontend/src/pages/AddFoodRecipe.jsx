@@ -1,46 +1,44 @@
 import axios from 'axios'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { baseUrl } from '../../url'
 import { motion } from 'framer-motion'
 import { FiUpload } from 'react-icons/fi'
 
 export default function AddFoodRecipe() {
-    
     const [recipeData, setRecipeData] = useState({})
     const [fileName, setFileName] = useState('No file selected')
-    const [isSubmitting, setIsSubmitting] = useState(false)
     const navigate = useNavigate()
-
+    
+    // This is the original working code for handling form changes
     const onHandleChange = (e) => {
         if (e.target.name === "file") {
             setFileName(e.target.files[0]?.name || 'No file selected')
-            setRecipeData(prev => ({ ...prev, [e.target.name]: e.target.files[0] }))
+            let val = e.target.files[0]
+            setRecipeData(pre => ({ ...pre, [e.target.name]: val }))
         } else {
             let val = (e.target.name === "ingredients") ? e.target.value.split(",") : e.target.value
-            setRecipeData(prev => ({ ...prev, [e.target.name]: val }))
+            setRecipeData(pre => ({ ...pre, [e.target.name]: val }))
         }
     }
-
+    
+    // This is the original working code for form submission
     const onHandleSubmit = async (e) => {
         e.preventDefault()
-        setIsSubmitting(true)
-        
-        try {
-            await axios.post(`${baseUrl}/recipe`, recipeData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'authorization': 'bearer ' + localStorage.getItem("token")
-                }
-            })
-            navigate("/")
-        } catch (error) {
-            console.error('Error submitting recipe:', error)
-        } finally {
-            setIsSubmitting(false)
-        }
+        console.log(recipeData)
+        await axios.post("http://localhost:5000/recipe", recipeData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'authorization': 'bearer ' + localStorage.getItem("token")
+            }
+        })
+        .then(() => navigate("/"))
+        .catch(error => {
+            console.error("Error adding recipe:", error)
+            alert("Error adding recipe: " + (error.response?.data?.message || error.message))
+        })
     }
 
+    // Animation variants for the form
     const formVariants = {
         hidden: { opacity: 0, y: 20 },
         visible: { 
@@ -57,7 +55,7 @@ export default function AddFoodRecipe() {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 }
     }
-
+    
     return (
         <>
             <div className="w-full max-w-4xl mx-auto px-4 py-24">
@@ -150,14 +148,13 @@ export default function AddFoodRecipe() {
                     <motion.div variants={itemVariants}>
                         <button 
                             type="submit"
-                            disabled={isSubmitting}
                             className="btn w-full flex items-center justify-center"
                         >
-                            {isSubmitting ? 'Creating...' : 'Create Recipe'}
+                            Create Recipe
                         </button>
                     </motion.div>
                 </motion.form>
             </div>
         </>
     )
-}
+} 

@@ -6,7 +6,6 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { motion } from "framer-motion";
 import axios from 'axios';
-import { baseUrl } from '../../url';
 
 export default function RecipeItems({ initialRecipes = [] }) {
     const [allRecipes, setAllRecipes] = useState([])
@@ -21,7 +20,7 @@ export default function RecipeItems({ initialRecipes = [] }) {
             try {
                 // If we're on the myRecipes page, filter recipes
                 if (path) {
-                    const response = await axios.get(`${baseUrl}/recipe`)
+                    const response = await axios.get(`http://localhost:5000/recipe`)
                     const recipes = response.data
                     const user = JSON.parse(localStorage.getItem("user"))
                     if (user && user._id) {
@@ -37,7 +36,7 @@ export default function RecipeItems({ initialRecipes = [] }) {
                 }
                 // Default home page with all recipes
                 else {
-                    const response = await axios.get(`${baseUrl}/recipe`)
+                    const response = await axios.get(`http://localhost:5000/recipe`)
                     setAllRecipes(response.data)
                 }
             } catch (error) {
@@ -52,7 +51,7 @@ export default function RecipeItems({ initialRecipes = [] }) {
     }, [path])
 
     const onDelete = async (id) => {
-        await axios.delete(`${baseUrl}/recipe/${id}`)
+        await axios.delete(`http://localhost:5000/recipe/${id}`)
             .then((res) => console.log(res))
         setAllRecipes(recipes => recipes.filter(recipe => recipe._id !== id))
         let filterItem = favItems.filter(recipe => recipe._id !== id)
@@ -109,7 +108,7 @@ export default function RecipeItems({ initialRecipes = [] }) {
                     >
                         <div className="relative h-52 overflow-hidden rounded-t-lg">
                             <img 
-                                src={`${baseUrl}/images/${item.coverImage}`} 
+                                src={`http://localhost:5000/images/${item.coverImage}`} 
                                 alt={item.title}
                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />

@@ -17,7 +17,7 @@ export default function EditRecipe() {
         const fetchRecipeData = async () => {
             setIsLoading(true)
             try {
-                const response = await axios.get(`${baseUrl}/recipe/${id}`)
+                const response = await axios.get(`http://localhost:5000/recipe/${id}`)
                 const data = response.data
                 setRecipeData({
                     title: data.title,

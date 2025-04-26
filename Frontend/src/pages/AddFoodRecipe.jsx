@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiUpload } from 'react-icons/fi'
+import { baseUrl } from '../../url'
 
 export default function AddFoodRecipe() {
     const [recipeData, setRecipeData] = useState({})
@@ -25,7 +26,7 @@ export default function AddFoodRecipe() {
     const onHandleSubmit = async (e) => {
         e.preventDefault()
         console.log(recipeData)
-        await axios.post("http://localhost:5000/recipe", recipeData, {
+        await axios.post(`http://localhost:5000/recipe`, recipeData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'authorization': 'bearer ' + localStorage.getItem("token")

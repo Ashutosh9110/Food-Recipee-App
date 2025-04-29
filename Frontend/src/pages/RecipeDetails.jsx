@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
-import { baseUrl } from '../../url'
 import { motion } from 'framer-motion'
 import { BsStopwatchFill, BsPersonCircle } from 'react-icons/bs'
 
@@ -14,17 +13,27 @@ export default function RecipeDetails() {
         const fetchRecipeDetails = async () => {
             setLoading(true)
             try {
-                const recipeResponse = await axios.get(`${baseUrl}/recipe/${id}`)
+                const recipeResponse = await axios.get(`http://localhost:5000/recipe/${id}`)
                 const recipeData = recipeResponse.data
                 
-                // Get user information
-                const userResponse = await axios.get(`${baseUrl}/user/${recipeData.createdBy}`)
-                const userData = userResponse.data
-                
+                // Set recipe data without trying to fetch user info
                 setRecipe({
                     ...recipeData,
-                    email: userData.email
+                    email: "Recipe Author" // Default value in case user info is not available
                 })
+                
+                // Try to get user information if available, but don't let it block displaying the recipe
+                try {
+                    const userResponse = await axios.get(`http://localhost:5000/user/${recipeData.createdBy}`)
+                    if (userResponse.data && userResponse.data.email) {
+                        setRecipe(prev => ({
+                            ...prev,
+                            email: userResponse.data.email
+                        }))
+                    }
+                } catch {
+                    console.log("Could not fetch user details, using default author name")
+                }
             } catch (error) {
                 console.error("Error fetching recipe details:", error)
             } finally {
@@ -62,7 +71,7 @@ export default function RecipeDetails() {
                 >
                     <div className="relative h-80 md:h-96">
                         <motion.img 
-                            src={`${baseUrl}/images/${recipe.coverImage}`} 
+                            src={`http://localhost:5000/images/${recipe.coverImage}`} 
                             alt={recipe.title}
                             className="w-full h-full object-cover"
                             initial={{ scale: 1.1 }}

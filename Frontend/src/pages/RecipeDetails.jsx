@@ -109,7 +109,7 @@ export default function RecipeDetails() {
                                 transition={{ delay: 0.6, duration: 0.6 }}
                             >
                                 <BsPersonCircle className="text-purple-500" />
-                                <span>Created by {recipe.email}</span>
+                                {/* <span>Created by {recipe.email}</span>  */}
                             </motion.div>
                         </div>
                     </div>

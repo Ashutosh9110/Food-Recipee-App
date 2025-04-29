@@ -19,7 +19,7 @@ export default function RecipeDetails() {
                 // Set recipe data without trying to fetch user info
                 setRecipe({
                     ...recipeData,
-                    email: "Recipe Author" // Default value in case user info is not available
+                    // email: "Recipe Author" // Default value in case user info is not available
                 })
                 
                 // Try to get user information if available, but don't let it block displaying the recipe

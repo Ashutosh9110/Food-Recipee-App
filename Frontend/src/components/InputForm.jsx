@@ -13,7 +13,7 @@ export default function InputForm({ setIsOpen }) {
     e.preventDefault()
     setLoading(true)
     setError("")
-    let endpoint=(isSignUp) ? "signUp" : "login"
+    let endpoint=(isSignUp) ? "api/signUp" : "api/login"
     
     // Get the backend URL from environment variables
     const backendUrl = import.meta.env.VITE_BACKEND_URL;

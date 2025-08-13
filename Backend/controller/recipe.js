@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
   const upload = multer({ storage: storage })
 
 const getRecipes=async(req,res)=>{
-    const recipes=await Recipes.find()
+    const recipes=await Recipes.find()  
     return res.json(recipes)
 }
 

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { baseUrl } from '../../url'
+import { baseUrl } from '../url'
 import { motion } from 'framer-motion'
 import { FiUpload } from 'react-icons/fi'
 

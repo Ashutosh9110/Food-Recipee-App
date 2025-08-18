@@ -9,6 +9,8 @@ import RecipeDetails from './pages/RecipeDetails'
 import GradientBackground from './components/GradientBackground'
 import FluidCursor from './components/FluidCursor'
 import Navbar from './components/Navbar'
+import ResetPassword from "./pages/ResetPassword";
+
 
 function App() {
   const containerRef = useRef(null)
@@ -26,6 +28,7 @@ function App() {
           <Route path="/editRecipe/:id" element={<EditRecipe />} />
           <Route path="/myRecipe" element={<Home />} />
           <Route path="/favRecipe" element={<Home />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
       </div>
     </BrowserRouter>

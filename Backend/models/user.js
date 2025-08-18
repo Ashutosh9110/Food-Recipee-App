@@ -13,7 +13,9 @@ const userSchema=mongoose.Schema({
         type:String,
         required: [true, "Password is required"],
         minlength: [6, "Password must be at least 6 characters"]
-    }
+    },
+    resetToken: String,
+    resetTokenExpiry: Date
 },{timestamps:true})
 
 module.exports=mongoose.model("User",userSchema)

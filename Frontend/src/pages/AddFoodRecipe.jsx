@@ -1,9 +1,9 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiUpload } from 'react-icons/fi'
-import { baseUrl } from '../../url'
+// import { baseUrl } from '../url'
 
 export default function AddFoodRecipe() {
     const [recipeData, setRecipeData] = useState({})

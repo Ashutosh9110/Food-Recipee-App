@@ -1,43 +1,39 @@
 import { useState } from 'react'
 import axios from 'axios'
 import PropTypes from 'prop-types'
+import { baseUrl } from "../url";  
 
 export default function InputForm({ setIsOpen }) {
-   const [email,setEmail]=useState("")
-   const [password,setPassword]=useState("")
-   const [isSignUp,setIsSignUp]=useState(false) 
-   const [error,setError]=useState("")
-   const [loading, setLoading] = useState(false)
+  const [email,setEmail]=useState("")
+  const [password,setPassword]=useState("")
+  const [isSignUp,setIsSignUp]=useState(false) 
+  const [error,setError]=useState("")
+  const [loading, setLoading] = useState(false)
 
-  const handleOnSubmit=async(e)=>{
+
+  // const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = baseUrl;
+  const handleOnSubmit=async(e)=> {
     e.preventDefault()
     setLoading(true)
     setError("")
     let endpoint=(isSignUp) ? "api/signUp" : "api/login"
     
-    // Get the backend URL from environment variables
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    console.log("Using backend URL:", backendUrl);
     
     try {
-      // Configure axios with headers
       const config = {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        withCredentials: false // Set to true if your API uses cookies for auth
       };
       
-      // Direct endpoint without /api prefix since Vercel routes everything to /api
-      console.log("Sending request to:", `${backendUrl}/${endpoint}`);
       const response = await axios.post(
         `${backendUrl}/${endpoint}`, 
         {email, password}, 
         config
       );
       
-      console.log("Auth response:", response.data);
       localStorage.setItem("token", response.data.token)
       localStorage.setItem("user", JSON.stringify(response.data.user))
       setIsOpen()
@@ -45,7 +41,6 @@ export default function InputForm({ setIsOpen }) {
       console.error("Auth error:", err);
       if (err.response) {
         console.error("Error data:", err.response.data);
-        console.error("Error status:", err.response.status);
         setError(err.response.data.error || err.response.data.message || "Authentication failed");
       } else if (err.request) {
         console.error("No response received:", err.request);
@@ -59,6 +54,17 @@ export default function InputForm({ setIsOpen }) {
     }
   }
 
+  const handleForgotPassword = async () => {
+    const resetEmail = prompt("Enter your registered email:")
+    if (!resetEmail) return
+
+    try {
+      const res = await axios.post(`${backendUrl}/api/password/forgot`, { email: resetEmail })
+      alert(res.data.message || "Password reset link sent to your email.")
+    } catch (err) {
+      alert(err.response?.data?.message || "Error sending password reset email")
+    }
+  }
 
   return (
     <div className='p-4'>
@@ -87,8 +93,17 @@ export default function InputForm({ setIsOpen }) {
               disabled={loading}
               type='submit'>{loading ? "Processing..." : (isSignUp ? "Sign Up" : "Login")}</button><br></br>
           { (error!="") && <h6 className='text-red-500 mb-4 text-sm text-center mt-6'>{error}</h6>}<br></br>
+
+          {!isSignUp && (
+          <p
+            className='text-center text-blue-400 cursor-pointer hover:text-blue-300 mt-4'
+            onClick={handleForgotPassword}
+          >
+            Forgot password?
+          </p>
+          )} 
             <p 
-              className='text-center text-gray-400 cursor-pointer hover:text-gray-300'
+              className='text-center text-gray-400 cursor-pointer hover:text-gray-300 mt-4'
               onClick={()=>setIsSignUp(pre=>!pre)}>{(isSignUp) ? "Already have an account": "Create new account"}</p>
         </form>
     </div>

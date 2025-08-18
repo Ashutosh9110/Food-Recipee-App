@@ -192,7 +192,7 @@ export default function RecipeItems({ initialRecipes = [] }) {
           <h3 className="text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">
             No recipes found
           </h3>
-          <p className="text-gray-400">Try adding some delicious recipes!</p>
+          <p className="text-gray-400">Try adding more delicious recipes!</p>
         </motion.div>
       )}
     </motion.div>

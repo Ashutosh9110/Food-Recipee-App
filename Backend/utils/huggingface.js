@@ -26,7 +26,7 @@ Always respond with **valid JSON only** in this structure:
   }
 }
 
-⚠️ DO NOT include explanations, markdown, or text outside the JSON.
+DO NOT include explanations, markdown, or text outside the JSON.
 If you cannot produce JSON, return {}.`
         },
         { role: "user", content: recipeText }

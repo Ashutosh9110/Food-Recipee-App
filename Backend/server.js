@@ -16,12 +16,15 @@ app.use(cors({
     ],
     credentials: true
   }));
+  
 app.use(express.json())
 app.use(express.static("public"))
 
 app.use("/api", require("./routes/user"))   
 app.use("/recipe", require("./routes/recipe")) 
 app.use("/api/password", passwordRoutes);
+app.use("/ai", require("./routes/improveRecipeRoutes"));
+
 
 app.get("/debug-routes", (req, res) => {
     res.json({ msg: "password routes mounted" });

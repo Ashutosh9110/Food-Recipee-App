@@ -2,6 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import { baseUrl } from "../url";  
+import { setAutoLogout } from "../utils/auth"
 
 export default function InputForm({ setIsOpen }) {
   const [email,setEmail]=useState("")
@@ -34,20 +35,20 @@ export default function InputForm({ setIsOpen }) {
         config
       );
       
-      localStorage.setItem("token", response.data.token)
-      localStorage.setItem("user", JSON.stringify(response.data.user))
+    const token = response.data.token
+    localStorage.setItem("token", token)
+    localStorage.setItem("user", JSON.stringify(response.data.user))
+    setAutoLogout(token)
+
       setIsOpen()
     } catch (err) {
       console.error("Auth error:", err);
       if (err.response) {
-        console.error("Error data:", err.response.data);
-        setError(err.response.data.error || err.response.data.message || "Authentication failed");
+        setError(err.response.data.error || err.response.data.message || "Authentication failed")
       } else if (err.request) {
-        console.error("No response received:", err.request);
-        setError("No response from server. Please check your internet connection.");
+        setError("No response from server. Please check your internet connection.")
       } else {
-        console.error("Error message:", err.message);
-        setError("Failed to connect to server");
+        setError("Failed to connect to server")
       }
     } finally {
       setLoading(false)

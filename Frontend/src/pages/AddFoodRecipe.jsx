@@ -59,7 +59,7 @@ export default function AddFoodRecipe() {
     
     return (
         <>
-            <div className="w-full max-w-4xl mx-auto px-4 py-24">
+            <div className="w-full max-w-4xl mx-auto px-4 py-40">
                 <motion.h1 
                     className="text-4xl font-bold mb-10 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
                     initial={{ opacity: 0, y: -20 }}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // 👈 import useLocation
 import { BsStopwatchFill } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa6";
 import { FaEdit } from "react-icons/fa";
@@ -10,34 +10,31 @@ import axios from "axios";
 export default function RecipeItems({ initialRecipes = [] }) {
   const [allRecipes, setAllRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  let path = window.location.pathname === "/myRecipe" ? true : false;
-  let favItems = JSON.parse(localStorage.getItem("fav")) ?? [];
+  const location = useLocation();
   const navigate = useNavigate();
+  const path = location.pathname === "/myRecipe";
+
+  let favItems = JSON.parse(localStorage.getItem("fav")) ?? [];
 
   useEffect(() => {
     const fetchRecipes = async () => {
       setIsLoading(true);
       try {
-        // If we're on the myRecipes page, filter recipes
-        if (path) {
+        if (location.pathname === "/myRecipe") {
           const response = await axios.get(`http://localhost:5000/recipe`);
           const recipes = response.data;
           const user = JSON.parse(localStorage.getItem("user"));
           if (user && user._id) {
             const filteredRecipes = recipes.filter(
-              (recipe) => recipe.createdBy === user._id
+              (recipe) => recipe.createdBy?._id === user._id
             );
             setAllRecipes(filteredRecipes);
           } else {
             setAllRecipes([]);
           }
-        }
-        // If we're on the favorites page
-        else if (window.location.pathname === "/favRecipe") {
+        } else if (location.pathname === "/favRecipe") {
           setAllRecipes(favItems);
-        }
-        // Default home page with all recipes
-        else {
+        } else {
           const response = await axios.get(`http://localhost:5000/recipe`);
           setAllRecipes(response.data);
         }
@@ -50,7 +47,7 @@ export default function RecipeItems({ initialRecipes = [] }) {
     };
 
     fetchRecipes();
-  }, [path]);
+  }, [location.pathname]);
 
   const onDelete = async (id) => {
     await axios
@@ -124,6 +121,9 @@ export default function RecipeItems({ initialRecipes = [] }) {
               <h3 className="text-xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600 group-hover:from-purple-600 group-hover:to-pink-500 transition-all duration-300">
                 {item.title}
               </h3>
+              <p className="text-gray-500 text-sm mb-3">
+                By {item.createdBy?.name || "Anonymous"}
+              </p>
               <div className="flex justify-between items-center mt-4">
                 <div className="flex items-center space-x-2 text-gray-400">
                   <BsStopwatchFill className="text-pink-500" />

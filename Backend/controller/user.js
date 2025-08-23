@@ -9,32 +9,24 @@ const { sendOtpSms } = require("../utils/twilioService");        // Twilio
 const userSignUp = async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
-    console.log("📩 Signup request received:", { name, email, phone });
 
     if (!name || !email || !phone || !password) {
-      console.log("❌ Missing fields");
       return res.status(400).json({ message: "All fields required" });
     }
 
     let user = await User.findOne({ email });
     if (user) {
-      console.log("❌ Duplicate email:", email);
       return res.status(400).json({ error: "Email already in use" });
     }
 
-    console.log("🔑 Hashing password...");
     const hashPwd = await bcrypt.hash(password, 10);
 
     const otp = generateOtp();
-    console.log("📲 Generated OTP:", otp);
 
     let formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
-    console.log("📞 Formatted phone:", formattedPhone);
 
-    console.log("📤 Sending SMS...");
     await sendOtpSms(formattedPhone, otp);
 
-    console.log("📝 Creating new user in DB...");
     const newUser = await User.create({
       name,
       email,
@@ -45,9 +37,6 @@ const userSignUp = async (req, res) => {
       isVerified: false,
     });
 
-    console.log("✅ User created with ID:", newUser._id);
-
-    console.log("📤 Sending OTP via Email...");
     await sendOtp(email, otp);
 
     res.status(200).json({
@@ -55,7 +44,7 @@ const userSignUp = async (req, res) => {
       userId: newUser._id,
     });
   } catch (err) {
-    console.error("❌ Signup error:", err.message);
+    console.error("Signup error:", err.message);
     console.error(err.stack);
     if (err.response) {
       console.error("Error Response:", err.response.data);
@@ -72,8 +61,8 @@ const userLogin = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
-    if (!user.isVerified)
-      return res.status(401).json({ message: "Account not verified" });
+    // if (!user.isVerified)
+    //   return res.status(401).json({ message: "Account not verified" });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
@@ -81,16 +70,13 @@ const userLogin = async (req, res) => {
 
     const otp = generateOtp();
 
-
+    let formattedPhone = user.phone.startsWith("+") ? user.phone : `+91${user.phone}`;
+    await sendOtpSms(formattedPhone, otp);
+    await sendOtp(user.email, otp);          // ✅ send email
 
     user.otp = otp;
     user.otpExpiry = Date.now() + 5 * 60 * 1000;
     await user.save();
-
-    
-    // Send OTP to BOTH
-    await sendOtp(user.email, otp);
-    await sendOtpSms(user.phone, otp);
 
     res.json({ message: "OTP sent to email & phone", userId: user._id });
   } catch (err) {
@@ -111,7 +97,7 @@ const verifyOtp = async (req, res) => {
       return res.status(400).json({ message: "Invalid or expired OTP" });
     }
 
-    user.isVerified = true;
+    user.isVerified = true; 
     user.otp = undefined;
     user.otpExpiry = undefined;
     await user.save();

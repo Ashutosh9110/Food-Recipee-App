@@ -24,7 +24,7 @@ export default function OtpForm({ userId, setIsOpen }) {
       localStorage.setItem("user", JSON.stringify(user))
       setAutoLogout(token)
 
-      alert("OTP verified successfully ✅")
+      alert("OTP verified successfully")
       setIsOpen() // close modal
     } catch (err) {
       console.error("OTP error:", err)

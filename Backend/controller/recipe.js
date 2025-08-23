@@ -13,15 +13,26 @@ const storage = multer.diskStorage({
   
   const upload = multer({ storage: storage })
 
-const getRecipes=async(req,res)=>{
-    const recipes=await Recipes.find()  
-    return res.json(recipes)
-}
-
-const getRecipe=async(req,res)=>{
-    const recipe=await Recipes.findById(req.params.id)
-    res.json(recipe)
-}
+  const getRecipes = async (req, res) => {
+    try {
+      const recipes = await Recipes.find().populate("createdBy", "name email"); 
+      return res.json(recipes);
+    } catch (err) {
+      console.error("Error fetching recipes:", err);
+      res.status(500).json({ message: "Error fetching recipes" });
+    }
+  };
+  
+  const getRecipe = async (req, res) => {
+    try {
+      const recipe = await Recipes.findById(req.params.id).populate("createdBy", "name email");
+      if (!recipe) return res.status(404).json({ message: "Recipe not found" });
+      res.json(recipe);
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching recipe" });
+    }
+  };
+  
 
 const addRecipe=async(req,res)=>{
     console.log(req.user)

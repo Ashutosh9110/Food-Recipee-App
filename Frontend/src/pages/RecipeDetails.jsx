@@ -139,7 +139,7 @@ export default function RecipeDetails() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="max-w-6xl mx-auto px-4 py-40 grid grid-cols-1 md:grid-cols-2 gap-8">
       {/* LEFT: Original Recipe */}
       <div className="bg-gray-800 p-6 rounded-lg text-white shadow-lg">
         <h2 className="text-2xl font-bold">{recipe.title}</h2>

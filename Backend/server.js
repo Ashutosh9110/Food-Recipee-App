@@ -1,6 +1,10 @@
+require("dotenv").config({
+  path: process.env.NODE_ENV === "production" ? ".env.production" : ".env.development"
+});
+
+
 const express = require("express")
 const app = express()
-const dotenv = require("dotenv").config()
 const connectDb = require("./config/connectionDb")
 const cors = require("cors")
 const passwordRoutes = require("./routes/passwordRoutes");

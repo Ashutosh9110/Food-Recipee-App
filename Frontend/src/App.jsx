@@ -10,6 +10,7 @@ import GradientBackground from './components/GradientBackground'
 import FluidCursor from './components/FluidCursor'
 import Navbar from './components/Navbar'
 import ResetPassword from "./pages/ResetPassword";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 
 function App() {
@@ -29,6 +30,8 @@ function App() {
           <Route path="/myRecipe" element={<Home />} />
           <Route path="/favRecipe" element={<Home />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-failed" element={<div>Payment Failed</div>} />
         </Routes>
       </div>
     </BrowserRouter>

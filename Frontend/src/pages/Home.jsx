@@ -6,6 +6,7 @@ import InputForm from '../components/InputForm'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'framer-motion'
+import axios from "axios";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -100,6 +101,22 @@ export default function Home() {
         }
     }
 
+    const buyPremium = async () => {
+        try {
+          const user = JSON.parse(localStorage.getItem("user"));
+          if (!user) {
+            alert("Please login first!");
+            return;
+          }
+      
+          const res = await axios.post("http://localhost:5000/api/create-checkout-session", { userId: user._id });
+          window.location.href = res.data.url; // redirect to Stripe checkout
+        } catch (err) {
+          console.error("Stripe checkout error:", err);
+          alert("Something went wrong. Try again!");
+        }
+      };
+
     return (
         <>
             <div className="content-container min-h-screen flex flex-col justify-center items-center pt-20 pb-10">
@@ -131,7 +148,18 @@ export default function Home() {
                 >
                     Create Recipe
                 </motion.button>
+                <motion.button 
+  ref={btnRef}
+  initial={{ opacity: 0, y: 30 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 1.2 }}
+  onClick={buyPremium}
+  className="btn mt-6 bg-gradient-to-r from-yellow-400 to-orange-500"
+>
+  Buy Premium Membership
+</motion.button>
             </div>
+            
 
             {(isOpen) && <Modal onClose={() => setIsOpen(false)}><InputForm setIsOpen={() => setIsOpen(false)} /></Modal>}
             

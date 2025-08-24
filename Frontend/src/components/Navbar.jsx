@@ -9,6 +9,7 @@ import {
   useMotionValueEvent 
 } from 'framer-motion'
 import { cn } from '../lib/utils'
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -16,7 +17,16 @@ export default function Navbar() {
   const { scrollYProgress } = useScroll()
   let token = localStorage.getItem("token")
   const [isLogin, setIsLogin] = useState(token ? false : true)
-  let user = JSON.parse(localStorage.getItem("user"))
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setUser(JSON.parse(localStorage.getItem("user"))); // keep Navbar synced
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Use motion value event to track scroll position
   useMotionValueEvent(scrollYProgress, "change", (current) => {
@@ -46,7 +56,9 @@ export default function Navbar() {
     if (token) {
       localStorage.removeItem("token")
       localStorage.removeItem("user")
-      setIsLogin(true) // by making it true, it will show the login option
+      setIsLogin(true) 
+      navigate("/");          
+      setIsOpen(true);
     }
     else { // if token is not there..that means user wants to login and it will open the pop up window
       setIsOpen(true)
@@ -124,7 +136,7 @@ export default function Navbar() {
                     </motion.li>
                   ))}
                   <motion.li
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: -10 }}  
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.5 }}
                   >
@@ -132,7 +144,17 @@ export default function Navbar() {
                       onClick={checkLogin} 
                       className="relative bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 py-2 rounded-full hover:opacity-90 transition-opacity font-medium ml-2"
                     >
-                      {isLogin ? "Login" : `Logout ${user?.email ? `(${user.email})` : ""}`}
+                      {isLogin 
+  ? "Login" 
+  : (
+    <>
+      Logout {user?.email ? `(${user.email})` : ""}
+      {user?.isPremium && (
+        <span className="ml-2 text-yellow-400 font-bold">⭐ Premium</span>
+      )}
+    </>
+  )
+}
                       <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-white to-transparent h-px" />
                     </button>
                   </motion.li>

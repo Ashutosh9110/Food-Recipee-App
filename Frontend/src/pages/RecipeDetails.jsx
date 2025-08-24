@@ -75,10 +75,15 @@ export default function RecipeDetails() {
   }, [id]);
 
   const improveRecipe = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+      if (!user?.isPremium) {
+        alert("You need to buy Premium Membership first!");
+        return;
+      }
+
     if (!recipe) return;
     setImproving(true);
     try {
-      // Build a readable text for the model regardless of array/string shapes
       const instructionText = recipe.instructions?.length
         ? recipe.instructions.join("\n")
         : "";
@@ -103,7 +108,6 @@ export default function RecipeDetails() {
 
       const data = await res.json();
 
-      // backend returns { improvedRecipe: {...} } or string on error
       const out = data.improvedRecipe;
       setImproved(
         out && typeof out === "object"

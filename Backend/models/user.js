@@ -20,7 +20,8 @@ const userSchema = mongoose.Schema({
     otp: String,
     otpExpiry: Date,
     resetToken: String,
-    resetTokenExpiry: Date
+    resetTokenExpiry: Date,
+    isPremium: { type: Boolean, default: false } 
 }, { timestamps: true })
 
 module.exports = mongoose.model("User", userSchema)

@@ -25,7 +25,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/addRecipe" element={<AddFoodRecipe />} />
-          <Route path="/recipe/:id" element={<RecipeDetails />} />
+          <Route path="/recipe/:id" element={localStorage.getItem("token")? <RecipeDetails />: <Home />}/>
           <Route path="/editRecipe/:id" element={<EditRecipe />} />
           <Route path="/myRecipe" element={<Home />} />
           <Route path="/favRecipe" element={<Home />} />
